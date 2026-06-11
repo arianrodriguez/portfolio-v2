@@ -2,6 +2,7 @@ import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { ImageSlot } from '@/components/ui/ImageSlot';
 import { Reveal } from '@/components/ui/Reveal';
+import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
 import { IconArrowRight, IconMail } from '@/components/ui/icons';
 import { site } from '@/data/site';
 
@@ -72,6 +73,8 @@ export function Hero() {
           </div>
         </Reveal>
       </Container>
+
+      <ScrollIndicator href="#servicios" />
     </header>
   );
 }

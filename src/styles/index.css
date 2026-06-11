@@ -346,6 +346,67 @@
     transform: translateY(-2px);
   }
 
+  /* — scroll indicator (hero) — */
+  .scroll-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.25s var(--ease-smooth);
+  }
+  .scroll-indicator:hover {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .scroll-indicator__arrow {
+    width: 18px;
+    height: 18px;
+    animation: scroll-arrow 2s var(--ease-smooth) infinite;
+  }
+  @keyframes scroll-arrow {
+    0%,
+    100% {
+      transform: translateY(-2px);
+    }
+    50% {
+      transform: translateY(2px);
+    }
+  }
+  .scroll-indicator__track {
+    position: relative;
+    width: 1px;
+    height: 54px;
+    overflow: hidden;
+    background: var(--color-dark-line);
+  }
+  .scroll-indicator__beam {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 45%;
+    background: linear-gradient(to bottom, transparent, var(--color-accent-2));
+    animation: scroll-beam 2s var(--ease-smooth) infinite;
+  }
+  @keyframes scroll-beam {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(245%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-indicator__beam,
+    .scroll-indicator__arrow {
+      animation: none;
+    }
+  }
+
   /* — scroll reveal — */
   .reveal {
     opacity: 0;
