@@ -1,9 +1,9 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
+
 /**
  * POST /api/contact — receives a contact-form submission and emails it to the
- * site owner via Resend. Runs as a Vercel Serverless Function so the Resend API
- * key stays server-side (never shipped to the browser).
- *
- * Uses the web-standard Request/Response signature (no extra dependencies).
+ * site owner via Resend. Runs as a Vercel Serverless Function (Node.js runtime)
+ * so the Resend API key stays server-side (never shipped to the browser).
  *
  * Required env var:  RESEND_API_KEY
  * Optional env vars: CONTACT_TO_EMAIL   (default: arianmrv12@gmail.com)
@@ -13,6 +13,14 @@
  * address you signed up with. Once your domain is verified in Resend, set
  * CONTACT_FROM_EMAIL to something like "Arian <contacto@tudominio.com>".
  */
+
+// The Vercel Node runtime parses the JSON body into `req.body` and augments
+// `res` with Express-like `.status()/.json()` helpers.
+type VercelRequest = IncomingMessage & { body?: unknown };
+interface VercelResponse extends ServerResponse {
+  status: (code: number) => VercelResponse;
+  json: (data: unknown) => VercelResponse;
+}
 
 interface ContactPayload {
   nombre?: string;
@@ -25,13 +33,6 @@ interface ContactPayload {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function json(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'content-type': 'application/json' },
-  });
-}
-
 /** Escape user input before interpolating into the email HTML. */
 function escapeHtml(value: string): string {
   return value
@@ -42,21 +43,27 @@ function escapeHtml(value: string): string {
     .replace(/'/g, '&#039;');
 }
 
-export default async function handler(req: Request): Promise<Response> {
+function safeParse(raw: string): ContactPayload {
+  try {
+    return JSON.parse(raw) as ContactPayload;
+  } catch {
+    return {};
+  }
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
-    return json({ ok: false, error: 'Method not allowed' }, 405);
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
-  let body: ContactPayload;
-  try {
-    body = (await req.json()) as ContactPayload;
-  } catch {
-    return json({ ok: false, error: 'Cuerpo inválido.' }, 400);
-  }
+  const raw = req.body;
+  const body: ContactPayload =
+    typeof raw === 'string' ? safeParse(raw) : ((raw as ContactPayload | undefined) ?? {});
 
   // Honeypot tripped → pretend success so bots don't learn anything.
   if (body.company && body.company.trim() !== '') {
-    return json({ ok: true }, 200);
+    return res.status(200).json({ ok: true });
   }
 
   const nombre = (body.nombre ?? '').trim();
@@ -65,13 +72,13 @@ export default async function handler(req: Request): Promise<Response> {
   const tipos = Array.isArray(body.tipos) ? body.tipos.filter(Boolean) : [];
 
   if (!nombre || !detalles || !EMAIL_RE.test(email)) {
-    return json({ ok: false, error: 'Datos incompletos o email inválido.' }, 400);
+    return res.status(400).json({ ok: false, error: 'Datos incompletos o email inválido.' });
   }
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error('RESEND_API_KEY is not set');
-    return json({ ok: false, error: 'Servidor sin configurar.' }, 500);
+    return res.status(500).json({ ok: false, error: 'Servidor sin configurar.' });
   }
 
   const to = process.env.CONTACT_TO_EMAIL || 'arianmrv12@gmail.com';
@@ -113,12 +120,12 @@ export default async function handler(req: Request): Promise<Response> {
     if (!resendRes.ok) {
       const detail = await resendRes.text();
       console.error('Resend error:', resendRes.status, detail);
-      return json({ ok: false, error: 'No se pudo enviar el correo.' }, 502);
+      return res.status(502).json({ ok: false, error: 'No se pudo enviar el correo.' });
     }
 
-    return json({ ok: true }, 200);
+    return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('Contact handler crashed:', err);
-    return json({ ok: false, error: 'Error inesperado.' }, 500);
+    return res.status(500).json({ ok: false, error: 'Error inesperado.' });
   }
 }
