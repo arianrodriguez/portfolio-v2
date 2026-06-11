@@ -81,6 +81,21 @@ anti-spam y estados de carga/éxito/error.
    - `CONTACT_FROM_EMAIL` (opcional, default `Portafolio <onboarding@resend.dev>`)
 3. Vuelve a desplegar. Listo: cada envío te llega por correo.
 
+### Seguridad anti-bot
+
+El endpoint aplica varias capas: **honeypot**, validación + **límites de longitud**,
+chequeo de `Content-Type` y `Origin`, escape de HTML, y **Cloudflare Turnstile**
+(CAPTCHA invisible). Para activar Turnstile:
+
+1. En [dash.cloudflare.com → Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile)
+   crea un widget (gratis) y copia la **Site Key** y la **Secret Key**.
+2. Añade en Vercel:
+   - `VITE_TURNSTILE_SITE_KEY` (pública — el prefijo `VITE_` la expone al front)
+   - `TURNSTILE_SECRET_KEY` (privada — el servidor verifica el token)
+   - `ALLOWED_ORIGINS` (opcional — hosts extra como tu dominio propio)
+3. Redespliega. Si no defines estas variables, el widget se oculta y la verificación
+   se omite (degradación elegante), pero el resto de capas siguen activas.
+
 > `onboarding@resend.dev` solo entrega al email con el que te registraste en Resend.
 > Cuando verifiques tu dominio en Resend (unos registros DNS), cambia `CONTACT_FROM_EMAIL`
 > a algo como `Arian <contacto@tudominio.com>` para mejor entregabilidad.

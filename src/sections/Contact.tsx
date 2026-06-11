@@ -4,11 +4,14 @@ import { Container } from '@/components/ui/Container';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { Reveal } from '@/components/ui/Reveal';
 import { IconArrowRight, IconCheck, IconMail, IconPhone, IconPin } from '@/components/ui/icons';
+import { Turnstile } from '@/components/ui/Turnstile';
 import { projectTypes } from '@/data/projectTypes';
 import { site } from '@/data/site';
 import { cn } from '@/lib/cn';
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 /** One row of the contact info list (label · icon · value). */
 function ContactInfo({
@@ -52,6 +55,11 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 export function Contact() {
   const [selectedTypes, setSelectedTypes] = useState<ReadonlySet<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
+  const [token, setToken] = useState<string | null>(null);
+  /** Bumping this remounts Turnstile to mint a fresh single-use token. */
+  const [captchaKey, setCaptchaKey] = useState(0);
+
+  const captchaEnabled = Boolean(TURNSTILE_SITE_KEY);
 
   const toggleType = (type: string) => {
     setSelectedTypes((prev) => {
@@ -74,6 +82,7 @@ export function Contact() {
       detalles: String(data.get('detalles') ?? ''),
       company: String(data.get('company') ?? ''), // honeypot
       tipos: Array.from(selectedTypes),
+      turnstileToken: token ?? '',
     };
 
     setStatus('sending');
@@ -89,6 +98,10 @@ export function Contact() {
       setSelectedTypes(new Set());
     } catch {
       setStatus('error');
+    } finally {
+      // Token is single-use — reset the widget for any further attempt.
+      setToken(null);
+      setCaptchaKey((k) => k + 1);
     }
   };
 
@@ -181,7 +194,20 @@ export function Contact() {
                   />
                 </Field>
 
-                <button type="submit" className="submit-btn" disabled={status === 'sending'}>
+                {captchaEnabled && (
+                  <Turnstile
+                    key={captchaKey}
+                    siteKey={TURNSTILE_SITE_KEY as string}
+                    onVerify={setToken}
+                    onExpire={() => setToken(null)}
+                  />
+                )}
+
+                <button
+                  type="submit"
+                  className="submit-btn"
+                  disabled={status === 'sending' || (captchaEnabled && !token)}
+                >
                   {status === 'sending' ? 'Enviando…' : 'Enviar solicitud'}
                   <IconArrowRight className="h-[17px] w-[17px]" />
                 </button>
