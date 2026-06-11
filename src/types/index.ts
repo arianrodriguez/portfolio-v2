@@ -33,6 +33,8 @@ export interface Project {
   imagePlaceholder: string;
   /** Optional final image; falls back to the placeholder when absent. */
   imageSrc?: string;
+  /** How the image fills its frame. 'cover' (default) crops; 'contain' shows it whole. */
+  imageFit?: 'cover' | 'contain';
   /** Flip the media to the right column (zig-zag layout). */
   reversed?: boolean;
   caseHref: string;

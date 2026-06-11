@@ -26,6 +26,7 @@ function ProjectCard({ project, first }: { project: Project; first: boolean }) {
         <ImageSlot
           aspect="4 / 3"
           radius={18}
+          fit={project.imageFit}
           placeholder={project.imagePlaceholder}
           src={project.imageSrc}
           alt={project.title}

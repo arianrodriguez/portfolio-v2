@@ -141,7 +141,7 @@ export function Contact() {
                     name="detalles"
                     required
                     placeholder="Cuéntame qué quieres construir, tus objetivos y plazos..."
-                    className="contact-input min-h-[120px] resize-y"
+                    className="contact-input min-h-[120px] resize-none"
                   />
                 </Field>
 

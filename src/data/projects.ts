@@ -1,4 +1,7 @@
 import type { Project } from '@/types';
+import cariotipado from '@/assets/cariotipado.png';
+import skeen from '@/assets/skeen.png';
+import volcanizado from '@/assets/volcanizado.png';
 
 export const projects: Project[] = [
   {
@@ -14,7 +17,7 @@ export const projects: Project[] = [
       { value: '46+', label: 'cromosomas / muestra' },
       { value: '~95%', label: 'precisión de clasificación' },
     ],
-    imageSrc: '/src/assets/cariotipado.png' as string,
+    imageSrc: cariotipado,
     imagePlaceholder: 'Screenshot — Cariotipado Digital',
     caseHref: '#contacto',
   },
@@ -31,7 +34,8 @@ export const projects: Project[] = [
       { value: 'On-device', label: 'análisis en segundos' },
       { value: 'Privado', label: 'imagen no sale del móvil' },
     ],
-    imageSrc: '/src/assets/skeen.png' as string,
+    imageSrc: skeen,
+    imageFit: 'contain',
     imagePlaceholder: 'Screenshot — App skeen',
     reversed: true,
     caseHref: '#contacto',
@@ -49,7 +53,7 @@ export const projects: Project[] = [
       { value: 'Headless', label: 'arquitectura escalable' },
       { value: '+ Conversión', label: 'recomendación personalizada' },
     ],
-    imageSrc: '/src/assets/volcanizado.png' as string,
+    imageSrc: volcanizado,
     imagePlaceholder: 'Screenshot — Ecommerce',
     caseHref: '#contacto',
   },

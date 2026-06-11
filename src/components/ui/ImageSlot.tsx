@@ -10,6 +10,8 @@ interface ImageSlotProps {
   radius?: number;
   /** CSS aspect-ratio, e.g. "4 / 3". */
   aspect?: string;
+  /** object-fit: 'cover' (default) crops to fill; 'contain' shows the whole image. */
+  fit?: 'cover' | 'contain';
   /** 'light' for off-white sections, 'dark' for the hero panel. */
   tone?: 'light' | 'dark';
   className?: string;
@@ -26,6 +28,7 @@ export function ImageSlot({
   placeholder = 'Imagen',
   radius = 12,
   aspect,
+  fit = 'cover',
   tone = 'light',
   className,
 }: ImageSlotProps) {
@@ -41,7 +44,14 @@ export function ImageSlot({
       style={{ borderRadius: radius, aspectRatio: aspect }}
     >
       {src ? (
-        <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+        <img
+          src={src}
+          alt={alt}
+          className={cn(
+            'absolute inset-0 h-full w-full',
+            fit === 'contain' ? 'object-contain' : 'object-cover',
+          )}
+        />
       ) : (
         <div
           className={cn(
