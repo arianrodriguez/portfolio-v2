@@ -53,7 +53,7 @@ export function Hero() {
               tone="dark"
               aspect="4 / 5"
               radius={22}
-              placeholder="Tu foto profesional"
+              placeholder="Foto de perfil"
               src={site.heroPhoto}
               alt={site.name}
             />

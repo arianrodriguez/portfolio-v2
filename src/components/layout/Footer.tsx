@@ -13,7 +13,7 @@ function SocialLink({ href, label, children }: { href: string; label: string; ch
 
 export function Footer() {
   return (
-    <footer className="pt-[46px] pb-[60px]">
+    <footer className="pt-[20px] pb-[20px]">
       <Container className="flex flex-wrap items-center justify-between gap-5 text-[14px] text-ink-3">
         <div>© 2026 {site.name} · Ingeniería de software con IA</div>
         <div className="flex gap-2.5">

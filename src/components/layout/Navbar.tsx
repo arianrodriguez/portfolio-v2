@@ -5,6 +5,7 @@ import { useScrolled } from '@/hooks/useScrolled';
 import { navLinks } from '@/data/navigation';
 import { site } from '@/data/site';
 import { cn } from '@/lib/cn';
+import logo from '@/assets/logo.png';
 
 /** Fixed top nav: transparent over the dark hero, frosted-light once scrolled. */
 export function Navbar() {
@@ -29,7 +30,7 @@ export function Navbar() {
             scrolled ? 'text-ink' : 'text-white',
           )}
         >
-          <span className="brand-mark" data-scrolled={scrolled} />
+          <img src={logo} alt={`${site.brand} logo`} className="h-[30px] w-auto object-contain" />
           {site.brand}
         </a>
 
