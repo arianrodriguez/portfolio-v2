@@ -18,10 +18,6 @@ export function Hero() {
       <Container className="relative grid grid-cols-[1.05fr_.95fr] items-center gap-16 max-[980px]:grid-cols-1 max-[980px]:gap-12">
         {/* Copy */}
         <Reveal immediate>
-          <span className="mb-[30px] inline-flex items-center gap-2.5 rounded-full border border-dark-line bg-white/[.04] py-[7px] pl-3 pr-3.5 text-[13px] font-medium text-white/80">
-            <span className="h-2 w-2 rounded-full bg-[#36d399] shadow-[0_0_0_4px_rgba(54,211,153,.18)]" />
-            Disponible para nuevos proyectos · {site.location}
-          </span>
 
           <h1 className="font-display text-[clamp(40px,5.4vw,68px)] font-semibold leading-[1.05] tracking-[-.03em]">
             Construyo sistemas
@@ -32,7 +28,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-[26px] max-w-[480px] text-[19px] leading-[1.6] text-white/[.66]">
-            Ingeniero de software especializado en agentes de IA, modelos de visión entrenados a
+            Estudiante de Ingeniería de Software especializado en agentes de IA, modelos de visión entrenados a
             medida y arquitecturas cloud escalables. Convierto problemas complejos en productos
             reales.
           </p>
