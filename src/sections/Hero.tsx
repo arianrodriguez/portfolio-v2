@@ -10,7 +10,7 @@ export function Hero() {
   return (
     <header
       id="top"
-      className="relative overflow-hidden bg-dark pt-[148px] pb-[92px] text-white max-[980px]:pt-[128px] max-[980px]:pb-[76px]"
+      className="relative flex min-h-dvh items-center overflow-hidden bg-dark pt-[112px] pb-[72px] text-white max-[980px]:pt-[104px] max-[980px]:pb-[64px]"
     >
       <div className="grid-bg" />
       <div className="hero-glow" />
