@@ -293,6 +293,12 @@
     transform: translateY(-2px);
     box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
   }
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
   .form-ok {
     display: flex;
     align-items: center;
@@ -302,6 +308,18 @@
     background: rgba(54, 211, 153, 0.12);
     border: 1px solid rgba(54, 211, 153, 0.4);
     color: #a7f3d0;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .form-err {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 13px;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    color: #fca5a5;
     font-size: 15px;
     font-weight: 500;
   }

@@ -8,6 +8,8 @@ import { projectTypes } from '@/data/projectTypes';
 import { site } from '@/data/site';
 import { cn } from '@/lib/cn';
 
+type Status = 'idle' | 'sending' | 'success' | 'error';
+
 /** One row of the contact info list (label · icon · value). */
 function ContactInfo({
   label,
@@ -46,10 +48,10 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-/** Dark contact card: info column + project brief form. */
+/** Dark contact card: info column + project brief form wired to /api/contact. */
 export function Contact() {
   const [selectedTypes, setSelectedTypes] = useState<ReadonlySet<string>>(new Set());
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
 
   const toggleType = (type: string) => {
     setSelectedTypes((prev) => {
@@ -60,10 +62,34 @@ export function Contact() {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // No backend wired yet — surface the success state (see README to connect).
-    setSubmitted(true);
+    if (status === 'sending') return;
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const payload = {
+      nombre: String(data.get('nombre') ?? ''),
+      email: String(data.get('email') ?? ''),
+      detalles: String(data.get('detalles') ?? ''),
+      company: String(data.get('company') ?? ''), // honeypot
+      tipos: Array.from(selectedTypes),
+    };
+
+    setStatus('sending');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Request failed');
+      setStatus('success');
+      form.reset();
+      setSelectedTypes(new Set());
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -98,7 +124,17 @@ export function Contact() {
 
             {/* Right — form */}
             <div>
-              <form onSubmit={handleSubmit} className="grid gap-4">
+              <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
+                {/* Honeypot — hidden from humans, tempting for bots. */}
+                <input
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                />
+
                 <div className="grid grid-cols-2 gap-4 max-[560px]:grid-cols-1">
                   <Field label="Nombre">
                     <input
@@ -145,17 +181,24 @@ export function Contact() {
                   />
                 </Field>
 
-                <button type="submit" className="submit-btn">
-                  Enviar solicitud
+                <button type="submit" className="submit-btn" disabled={status === 'sending'}>
+                  {status === 'sending' ? 'Enviando…' : 'Enviar solicitud'}
                   <IconArrowRight className="h-[17px] w-[17px]" />
                 </button>
 
-                {submitted && (
-                  <div className="form-ok">
-                    <IconCheck className="h-4 w-4" />
-                    ¡Gracias! Tu mensaje fue preparado. Te responderé muy pronto.
-                  </div>
-                )}
+                <div aria-live="polite">
+                  {status === 'success' && (
+                    <div className="form-ok">
+                      <IconCheck className="h-4 w-4" />
+                      ¡Gracias! Tu mensaje fue enviado. Te responderé muy pronto.
+                    </div>
+                  )}
+                  {status === 'error' && (
+                    <div className="form-err">
+                      No se pudo enviar. Inténtalo de nuevo o escríbeme a {site.email}.
+                    </div>
+                  )}
+                </div>
               </form>
             </div>
           </div>

@@ -66,9 +66,29 @@ src/
 | Screenshots de proyectos     | `src/data/projects.ts` → `imageSrc`      |
 | Paleta / tipografía          | `src/styles/index.css` (`@theme`)        |
 
+## Formulario de contacto (Vercel Function + Resend)
+
+El formulario hace `POST` a `api/contact.ts` (Serverless Function de Vercel), que envía
+el correo vía **Resend** y mantiene la API key fuera del navegador. Incluye honeypot
+anti-spam y estados de carga/éxito/error.
+
+**Puesta en marcha:**
+
+1. Crea una cuenta gratis en [resend.com](https://resend.com) y genera una **API Key**.
+2. En **Vercel → Project → Settings → Environment Variables**, añade:
+   - `RESEND_API_KEY` (requerida)
+   - `CONTACT_TO_EMAIL` (opcional, default `arianmrv12@gmail.com`)
+   - `CONTACT_FROM_EMAIL` (opcional, default `Portafolio <onboarding@resend.dev>`)
+3. Vuelve a desplegar. Listo: cada envío te llega por correo.
+
+> `onboarding@resend.dev` solo entrega al email con el que te registraste en Resend.
+> Cuando verifiques tu dominio en Resend (unos registros DNS), cambia `CONTACT_FROM_EMAIL`
+> a algo como `Arian <contacto@tudominio.com>` para mejor entregabilidad.
+
+**Prueba local:** las funciones `/api` no corren con `vite dev`. Usa `vercel dev`
+(`npm i -g vercel`) con un `.env.local` basado en `.env.example`.
+
 ## Pendientes opcionales
 
-- **Imágenes reales** — coloca tus capturas en `src/assets/` e impórtalas en `imageSrc`
-  (hero y proyectos). Mientras tanto se muestra un placeholder elegante.
-- **Formulario de contacto** — hoy solo muestra el estado de éxito en cliente. Conéctalo a
-  un servicio (Formspree, Resend, una API propia) en `src/sections/Contact.tsx` → `handleSubmit`.
+- **Imágenes reales** — ya integradas vía import desde `src/assets/`. Para optimizar carga,
+  conviene redimensionar/convertir a WebP las más pesadas (p. ej. `cariotipado.png`).
