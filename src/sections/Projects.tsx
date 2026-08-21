@@ -10,6 +10,9 @@ import { cn } from '@/lib/cn';
 
 /** One alternating project block (media + narrative). */
 function ProjectCard({ project, first }: { project: Project; first: boolean }) {
+  /** Cases pointing at a live site open in a new tab; in-page anchors stay here. */
+  const external = /^https?:\/\//.test(project.caseHref);
+
   return (
     <div
       className={cn(
@@ -63,6 +66,8 @@ function ProjectCard({ project, first }: { project: Project; first: boolean }) {
         <div className="mt-[26px] flex gap-3.5">
           <a
             href={project.caseHref}
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
             className="inline-flex items-center gap-[7px] border-b-[1.5px] border-accent pb-0.5 text-[14.5px] font-semibold text-ink transition-[gap] hover:gap-[11px]"
           >
             Ver caso

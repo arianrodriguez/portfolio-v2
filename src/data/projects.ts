@@ -1,12 +1,34 @@
 import type { Project } from '@/types';
 import cariotipado from '@/assets/cariotipado.png';
+import impulza from '@/assets/impulza.jpg';
 import skeen from '@/assets/skeen.png';
 import volcanizado from '@/assets/volcanizado.png';
 
 export const projects: Project[] = [
   {
+    id: 'impulza',
+    number: 'P.01 — Producto + IA',
+    badge: 'Producto full-stack',
+    title: 'impulza.pe',
+    role: 'Plataforma de empleabilidad con IA',
+    description:
+      'Plataforma propia para impulza.pe: generador de CV optimizado con IA (formato ATS), catálogo de cursos con video propio, y suscripciones con pagos recurrentes. Arquitectura completa desde cero: frontend, backend serverless, base de datos y modelo de IA integrado.',
+    tags: ['React', 'Supabase', 'Claude API', 'Vercel', 'Mercado Pago'],
+    stats: [
+      { value: '<30s', label: 'generación de CV optimizado con IA' },
+      { value: '100%', label: 'compatible con filtros ATS' },
+    ],
+    // Captura actual del landing (1550×860). Reemplaza src/assets/impulza.png si
+    // prefieres mostrar el generador de CV o el catálogo de cursos.
+    imageSrc: impulza,
+    imagePlaceholder: 'Screenshot — impulza.pe',
+    // Imagen a la derecha: espejo de Cariotipado Digital.
+    reversed: true,
+    caseHref: 'https://impulza.pe',
+  },
+  {
     id: 'cariotipado',
-    number: 'P.01 — Genética + IA',
+    number: 'P.02 — Genética + IA',
     badge: 'Visión por computadora',
     title: 'Cariotipado Digital',
     role: 'Identificación cromosómica automatizada',
@@ -23,7 +45,7 @@ export const projects: Project[] = [
   },
   {
     id: 'skeen',
-    number: 'P.02 — Salud + IA móvil',
+    number: 'P.03 — Salud + IA móvil',
     badge: 'App móvil · Salud',
     title: 'skeen — Dermatología Inteligente',
     role: 'Detección temprana de cáncer de piel',
@@ -42,7 +64,7 @@ export const projects: Project[] = [
   },
   {
     id: 'volcanizado',
-    number: 'P.03 — Ecommerce',
+    number: 'P.04 — Ecommerce',
     badge: 'E-commerce',
     title: 'volcanizado',
     role: 'Tienda de minerales y cristales.',
